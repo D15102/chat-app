@@ -83,18 +83,7 @@ export const logout = async (req, res) => {
                 success: false
             })
         }
-        // Clear cookie with same options as when setting
-        const clearOptions = {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
-        }
-
-        if (process.env.NODE_ENV === "production" && process.env.COOKIE_DOMAIN) {
-            clearOptions.domain = process.env.COOKIE_DOMAIN
-        }
-
-        res.clearCookie("token", clearOptions)
+        res.clearCookie("token")
         return res.json({
             message: "Logged Out Successfully ✅",
             success: true
