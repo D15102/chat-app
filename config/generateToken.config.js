@@ -5,8 +5,9 @@ export const generateToken = (req, res, userData) => {
 
     res.cookie('token', token, {
         httpOnly: true,
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-        secure: process.env.NODE_ENV === 'production',
-        domain: process.env.NODE_ENV === 'production' ? '.onrender.com' : undefined
+        secure: true, // Always true on Render (HTTPS)
+        sameSite: 'none', // Required for cross-origin
+        maxAge: 60 * 60 * 1000, // 1 hour
+        path: '/'
     })
 }
