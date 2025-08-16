@@ -8,6 +8,6 @@ export const generateToken = (req, res, userData) => {
         secure: true, // Always true on Render (HTTPS)
         sameSite: 'none', // Required for cross-origin
         maxAge: 60 * 60 * 1000, // 1 hour
-        path: '/'
+        domain: process.env.COOKIE_DOMAIN || undefined,
     })
 }
