@@ -2,12 +2,16 @@ import express from 'express'
 import { config } from 'dotenv'
 import { connectDB } from './config/mongodb.config.js'
 import userRoutes from './routes/userRoutes.js'
+import messageRoutes from './routes/messageRoutes.js'
 import cors from 'cors'
 import path from 'path'
-config()
 import cookieParser from 'cookie-parser'
-const app = express()
+import { app, server } from './Socket-Io/socket-io-server.js'
+
+
+config()
 const PORT = process.env.PORT
+
 
 app.use(cors({
     origin: process.env.CLIENT_URL,
@@ -17,7 +21,12 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 app.use('/users', userRoutes)
+app.use("/message", messageRoutes)
 
+
+
+
+//Production Deployment Code
 if (process.env.NODE_ENV === "production") {
     const dirPath = path.resolve()
     app.use(express.static("./frontend/dist"))
@@ -26,7 +35,7 @@ if (process.env.NODE_ENV === "production") {
     })
 }
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     connectDB()
     console.log(`Server Is running on http://localhost:${PORT}`)
 })

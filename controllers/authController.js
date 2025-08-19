@@ -30,7 +30,8 @@ export const signup = async (req, res) => {
         generateToken(req, res, userData)
         return res.json({
             message: "Account Created Successfully !",
-            success: true
+            success: true,
+            user: userData,
         })
     } catch (error) {
         return res.json({
@@ -49,6 +50,7 @@ export const login = async (req, res) => {
             })
         }
         const existingUser = await userModal.findOne({ email })
+        console.log(existingUser)
         if (!existingUser) {
             return res.json({
                 message: "User Not Exists ℹ️",
@@ -65,7 +67,8 @@ export const login = async (req, res) => {
         generateToken(req, res, existingUser)
         return res.json({
             message: "Logged In Successfully ✅",
-            success: true
+            success: true,
+            user : existingUser
         })
     } catch (error) {
         return res.json({
@@ -116,3 +119,4 @@ export const me = async (req, res) => {
         console.log(error.message)
     }
 }
+

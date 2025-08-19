@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import API from "../../config/axios.js";
+import useAuth from "../contexts/AuthContext.js";
 
 export default function Signup() {
   const [signupData, setSignupData] = useState({
@@ -13,6 +14,7 @@ export default function Signup() {
   });
   const [isLoading, setisLoading] = useState(false);
   const navigate = useNavigate();
+  const { isAuthenticated, setIsAuthenticated } = useAuth();
   const onSubmit = async (e) => {
     e.preventDefault();
     if (signupData.password !== signupData.confirmPassword) {
@@ -32,6 +34,7 @@ export default function Signup() {
         password: "",
         confirmPassword: "",
       });
+      setIsAuthenticated(true);
       navigate("/dashboard");
     } catch (error) {
       console.log(error.message);

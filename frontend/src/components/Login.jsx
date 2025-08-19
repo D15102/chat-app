@@ -15,7 +15,7 @@ export default function Login() {
   const [isLoading, setisLoading] = useState(false);
   const navigate = useNavigate();
   const { isAuthenticated, setIsAuthenticated } = useAuth();
-  // const { setUser } = useUser();
+  const { user, setUser } = useUser();
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -28,6 +28,7 @@ export default function Login() {
       }
       toast.success(data.message);
       setIsAuthenticated(true);
+      setUser(data.user);
       setLoginData({
         username: "",
         email: "",
@@ -50,8 +51,12 @@ export default function Login() {
   };
 
   useEffect(() => {
-    localStorage.setItem("isAuthenticated", isAuthenticated);
+    sessionStorage.setItem("isAuthenticated", isAuthenticated);
   }, [isAuthenticated]);
+
+  useEffect(() => {
+    sessionStorage.setItem("user", JSON.stringify(user));
+  }, [user]);
 
   // useEffect(() => {
   //   async function getUserDetails() {
