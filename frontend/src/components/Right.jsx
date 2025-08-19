@@ -35,6 +35,7 @@ const Right = ({
       console.log(data);
 
       setConversations((prev) => [...prev, data.newMessage]);
+      setShowConversations(true);
       setMessage("");
     } catch (error) {
       console.log(error);
