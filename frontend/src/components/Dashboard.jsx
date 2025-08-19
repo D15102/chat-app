@@ -27,6 +27,7 @@ export default function Dashboard() {
   const [selectedChatUser, setSelectedChatUser] = useState(null);
   const [message, setMessage] = useState("");
   const { chatUsers, setChatUsers } = useChatUsers();
+  const [showConversations, setShowConversations] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -258,11 +259,15 @@ export default function Dashboard() {
           setSelectedChatUser={setSelectedChatUser}
           message={message}
           setMessage={setMessage}
+          showConversations={showConversations}
+          setShowConversations={setShowConversations}
         />
         <Right
           selectedChatUser={selectedChatUser}
           message={message}
           setMessage={setMessage}
+          showConversations={showConversations}
+          setShowConversations={setShowConversations}
         />
       </main>
     </div>

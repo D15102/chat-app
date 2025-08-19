@@ -18,6 +18,8 @@ const Left = ({
   setSelectedChatUser,
   message,
   setMessage,
+  showConversations,
+  setShowConversations,
 }) => {
   const [availableUsersLoading, setAvailableUsersLoading] = useState(false);
   const [allUsers, setAllUsers] = useState([]);
@@ -73,9 +75,12 @@ const Left = ({
       const res = await API.get(`/message/get/${user._id}`);
       const data = res.data;
       if (!data.success) {
+        setShowConversations(false);
+        console.log(data.message);
         return toast.error(data.message);
       }
       console.log(data);
+      setShowConversations(true);
       setConversations(data.messages);
     } catch (error) {
       console.log(error);

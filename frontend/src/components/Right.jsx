@@ -9,7 +9,13 @@ import useUser from "../contexts/UserContext";
 import useSocketContext from "../contexts/SocketContext";
 import { format } from "date-fns";
 
-const Right = ({ selectedChatUser, message, setMessage }) => {
+const Right = ({
+  selectedChatUser,
+  message,
+  setMessage,
+  showConversations,
+  setShowConversations,
+}) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const { chatUsers } = useChatUsers();
@@ -86,7 +92,9 @@ const Right = ({ selectedChatUser, message, setMessage }) => {
           <div className="w-full h-full flex flex-col">
             {/* Messages Area */}
             <div className="w-full h-full bg-lime-50 flex flex-col space-y-4 py-4 px-2">
-              {Array.isArray(conversations) && conversations.length > 0 ? (
+              {Array.isArray(conversations) &&
+              conversations.length > 0 &&
+              showConversations ? (
                 conversations.map((conversation, idx) => (
                   <div
                     key={idx}
