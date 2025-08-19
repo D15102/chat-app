@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import API from "../../config/axios.js";
 import useAuth from "../contexts/AuthContext.js";
+import useUser from "../contexts/UserContext.js";
 
 export default function Signup() {
   const [signupData, setSignupData] = useState({
@@ -12,6 +13,7 @@ export default function Signup() {
     password: "",
     confirmPassword: "",
   });
+  const { user, setUser } = useUser();
   const [isLoading, setisLoading] = useState(false);
   const navigate = useNavigate();
   const { isAuthenticated, setIsAuthenticated } = useAuth();
@@ -28,6 +30,7 @@ export default function Signup() {
         return toast.error(data.message);
       }
       toast.success(data.message);
+      setUser(data.user);
       setSignupData({
         username: "",
         email: "",
@@ -49,6 +52,10 @@ export default function Signup() {
       [e.target.name]: e.target.value,
     });
   };
+
+  useEffect(() => {
+    sessionStorage.setItem("user", JSON.stringify(user));
+  }, [user]);
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-500 via-emerald-600 to-blue-600 p-4">
       {/* Card */}
