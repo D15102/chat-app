@@ -21,7 +21,7 @@ const App = () => {
     sessionStorage.getItem("isAuthenticated") || false
   );
   const [themeMode, setThemeMode] = useState(
-    sessionStorage.getItem("themeMode") || "light"
+    localStorage.getItem("themeMode") || "light"
   );
   const [chatUsers, setChatUsers] = useState(
     JSON.parse(sessionStorage.getItem("chatUsers")) || []
@@ -43,7 +43,7 @@ const App = () => {
   }, [themeMode]);
 
   useEffect(() => {
-    sessionStorage.setItem("themeMode", themeMode);
+    localStorage.setItem("themeMode", themeMode);
   }, [themeMode]);
 
   return (

@@ -63,7 +63,7 @@ export default function Signup() {
   }, [user]);
 
   useEffect(() => {
-    sessionStorage.setItem("themeMode", themeMode);
+    localStorage.setItem("themeMode", themeMode);
   }, [themeMode]);
 
   return (

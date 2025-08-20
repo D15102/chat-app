@@ -62,7 +62,7 @@ export default function Login() {
   }, [user]);
 
   useEffect(() => {
-    sessionStorage.setItem("themeMode", themeMode);
+    localStorage.setItem("themeMode", themeMode);
   }, [themeMode]);
 
   return (

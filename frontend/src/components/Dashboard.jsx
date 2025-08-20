@@ -126,6 +126,10 @@ export default function Dashboard() {
     sessionStorage.setItem("user", JSON.stringify(user));
   }, [user]);
 
+  useEffect(() => {
+    localStorage.setItem("themeMode", themeMode);
+  }, [themeMode]);
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       {/* Navbar */}
