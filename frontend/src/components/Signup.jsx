@@ -1,3 +1,4 @@
+// Signup.tsx
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -5,6 +6,8 @@ import { toast } from "react-hot-toast";
 import API from "../../config/axios.js";
 import useAuth from "../contexts/AuthContext.js";
 import useUser from "../contexts/UserContext.js";
+import styled from "styled-components";
+import useTheme from "../contexts/ThemeContext";
 
 export default function Signup() {
   const [signupData, setSignupData] = useState({
@@ -13,14 +16,16 @@ export default function Signup() {
     password: "",
     confirmPassword: "",
   });
+  const { themeMode, darkMode, lightMode } = useTheme();
   const { user, setUser } = useUser();
   const [isLoading, setisLoading] = useState(false);
   const navigate = useNavigate();
-  const { isAuthenticated, setIsAuthenticated } = useAuth();
+  const { setIsAuthenticated } = useAuth();
+
   const onSubmit = async (e) => {
     e.preventDefault();
     if (signupData.password !== signupData.confirmPassword) {
-      return toast.error("Password And Confirm Password Must Matched");
+      return toast.error("Password and Confirm Password must match");
     }
     try {
       setisLoading(true);
@@ -56,14 +61,39 @@ export default function Signup() {
   useEffect(() => {
     sessionStorage.setItem("user", JSON.stringify(user));
   }, [user]);
+
+  useEffect(() => {
+    sessionStorage.setItem("themeMode", themeMode);
+  }, [themeMode]);
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-500 via-emerald-600 to-blue-600 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-500 via-emerald-600 to-blue-600 dark:from-gray-900 dark:via-gray-800 dark:to-black p-4 transition-colors">
+      {/* Toggle Switch */}
+      <div className="absolute top-4 right-4">
+        <StyledWrapper>
+          <label className="switch">
+            <input
+              type="checkbox"
+              checked={themeMode === "dark"}
+              onChange={(e) =>
+                e.currentTarget.checked ? darkMode() : lightMode()
+              }
+            />
+            <div className="slider" />
+            <div className="slider-card">
+              <div className="slider-card-face slider-card-front" />
+              <div className="slider-card-face slider-card-back" />
+            </div>
+          </label>
+        </StyledWrapper>
+      </div>
+
       {/* Card */}
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="w-full max-w-md bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-white/20"
+        className="w-full max-w-md bg-white/10 dark:bg-gray-900/60 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-white/20 dark:border-gray-700"
       >
         {/* Title */}
         <motion.h1
@@ -77,7 +107,7 @@ export default function Signup() {
 
         {/* Form */}
         <form className="space-y-4" onSubmit={onSubmit}>
-          {/* Name */}
+          {/* Username */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
@@ -87,7 +117,7 @@ export default function Signup() {
             <input
               type="text"
               className="w-full px-4 py-2 rounded-xl bg-white/20 text-white placeholder-white/60 outline-none focus:ring-2 focus:ring-blue-400"
-              placeholder="Enter your full name"
+              placeholder="Enter your username"
               name="username"
               value={signupData.username}
               onChange={handleChange}
@@ -144,28 +174,23 @@ export default function Signup() {
               type="password"
               className="w-full px-4 py-2 rounded-xl bg-white/20 text-white placeholder-white/60 outline-none focus:ring-2 focus:ring-blue-400"
               placeholder="Re-enter password"
+              name="confirmPassword"
               value={signupData.confirmPassword}
               onChange={handleChange}
-              name="confirmPassword"
               required
             />
           </motion.div>
 
-          {/* Button */}
           {/* Button */}
           <motion.button
             whileHover={!isLoading ? { scale: 1.05 } : {}}
             whileTap={!isLoading ? { scale: 0.95 } : {}}
             transition={{ type: "spring", stiffness: 300 }}
             disabled={isLoading}
-            className={`w-full py-3 mt-4 flex items-center justify-center gap-2
-    bg-gradient-to-r from-blue-500 to-teal-500 
-    text-white font-semibold rounded-xl shadow-lg hover:shadow-2xl 
-    disabled:opacity-70 disabled:cursor-not-allowed`}
+            className="w-full py-3 mt-4 flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-teal-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-2xl disabled:opacity-70 disabled:cursor-not-allowed"
           >
             {isLoading ? (
               <>
-                {/* Spinner */}
                 <svg
                   className="w-5 h-5 animate-spin text-white"
                   xmlns="http://www.w3.org/2000/svg"
@@ -210,3 +235,67 @@ export default function Signup() {
     </div>
   );
 }
+
+const StyledWrapper = styled.div`
+  .switch {
+    --circle-dim: 1.2em;
+    font-size: 14px;
+    position: relative;
+    display: inline-block;
+    width: 3em;
+    height: 1.6em;
+    vertical-align: middle;
+  }
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #f5aeae;
+    transition: 0.4s;
+    border-radius: 30px;
+  }
+  .slider-card {
+    position: absolute;
+    height: var(--circle-dim);
+    width: var(--circle-dim);
+    border-radius: 50%;
+    left: 0.25em;
+    bottom: 0.25em;
+    transition: 0.4s;
+    pointer-events: none;
+  }
+  .slider-card-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    border-radius: 50%;
+    transition: 0.4s transform;
+  }
+  .slider-card-front {
+    background-color: #dc3535;
+  }
+  .slider-card-back {
+    background-color: #379237;
+    transform: rotateY(180deg);
+  }
+  input:checked ~ .slider-card .slider-card-back {
+    transform: rotateY(0);
+  }
+  input:checked ~ .slider-card .slider-card-front {
+    transform: rotateY(-180deg);
+  }
+  input:checked ~ .slider-card {
+    transform: translateX(1.4em);
+  }
+  input:checked ~ .slider {
+    background-color: #9ed99c;
+  }
+`;

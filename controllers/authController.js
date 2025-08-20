@@ -1,5 +1,4 @@
 import bcryptjs from 'bcryptjs'
-import jwt from 'jsonwebtoken'
 import userModal from '../models/Users.js'
 import { generateToken } from '../config/generateToken.config.js'
 
@@ -50,7 +49,7 @@ export const login = async (req, res) => {
             })
         }
         const existingUser = await userModal.findOne({ email })
-        console.log(existingUser)
+        // console.log(existingUser)
         if (!existingUser) {
             return res.json({
                 message: "User Not Exists ℹ️",

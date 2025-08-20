@@ -37,6 +37,10 @@ export const sendMessage = async (req, res) => {
                 // await coversation.save()
             }
             await Promise.all([coversation.save(), newMessage.save()])
+            const receiverSocketId = getReceiverSocketId(receiverId)
+            if (receiverSocketId) {
+                io.to(receiverSocketId).emit("newMessage", newMessage)
+            }
             return res.json({
                 message: "Message Sent Successfully",
                 success: true,
@@ -89,7 +93,7 @@ export const getMessage = async (req, res) => {
             })
         }
         const messages = coversation.messages
-        console.log(messages)
+        // console.log(messages)
         return res.json({ messages, success: true })
 
     } catch (error) {

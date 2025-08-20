@@ -40,6 +40,7 @@ export default function Dashboard() {
       setChatUsers([]);
       setUser({});
       sessionStorage.removeItem("chatUsers");
+      sessionStorage.removeItem("allUsers");
       sessionStorage.removeItem("user");
       setIsAuthenticated(false);
       navigate("/");
@@ -163,7 +164,7 @@ export default function Dashboard() {
             <img
               src={user.profilePicture}
               alt="user avatar"
-              className="w-10 h-10 rounded-full border border-gray-300 object-cover"
+              className="w-10 h-10 rounded-full object-cover border-3 border-black dark:border-red-400"
             />
             <ChevronDown
               className={`w-5 h-5 text-gray-600 transition-transform ${

@@ -11,20 +11,25 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import { ChatUsersProvider } from "./contexts/ChatUsersContext";
 import { ConversationProvider } from "./contexts/ConversationContext";
 import { SocketProvider } from "./contexts/SocketContext.jsx";
+import { AllUserProvider } from "./contexts/AllUserContext.js";
 
 const App = () => {
-  const [user, setUser] = useState(JSON.parse(sessionStorage.getItem("user")) || {});
+  const [user, setUser] = useState(
+    JSON.parse(sessionStorage.getItem("user")) || {}
+  );
   const [isAuthenticated, setIsAuthenticated] = useState(
     sessionStorage.getItem("isAuthenticated") || false
   );
   const [themeMode, setThemeMode] = useState(
-    localStorage.getItem("themeMode") || "light"
+    sessionStorage.getItem("themeMode") || "light"
   );
   const [chatUsers, setChatUsers] = useState(
     JSON.parse(sessionStorage.getItem("chatUsers")) || []
   );
   const [conversations, setConversations] = useState([]);
-
+  const [allUsers, setAllUsers] = useState(
+    JSON.parse(sessionStorage.getItem("allUsers")) || []
+  );
   const lightMode = () => {
     setThemeMode("light");
   };
@@ -45,53 +50,55 @@ const App = () => {
     <UserProvider value={{ user, setUser }}>
       <AuthProvider value={{ isAuthenticated, setIsAuthenticated }}>
         <ThemeProvider value={{ themeMode, lightMode, darkMode }}>
-          <ChatUsersProvider value={{ chatUsers, setChatUsers }}>
-            <ConversationProvider value={{ conversations, setConversations }}>
-              <SocketProvider>
-                <div>
-                  <Routes>
-                    <Route path="/" element={<Login />} />
-                    <Route path="/signup" element={<Signup />} />
-                    <Route
-                      path="/dashboard"
-                      element={
-                        <ProtectedRoute>
-                          <Dashboard />
-                        </ProtectedRoute>
-                      }
-                    />
-                  </Routes>
-                  <Toaster
-                    position="top-center"
-                    reverseOrder={false}
-                    gutter={8}
-                    containerClassName=""
-                    containerStyle={{}}
-                    toasterId="default"
-                    toastOptions={{
-                      // Define default options
-                      className: "",
-                      duration: 1300,
-                      removeDelay: 1000,
-                      style: {
-                        background: "#363636",
-                        color: "#fff",
-                      },
-
-                      // Default options for specific types
-                      success: {
+          <AllUserProvider value={{ allUsers, setAllUsers }}>
+            <ChatUsersProvider value={{ chatUsers, setChatUsers }}>
+              <ConversationProvider value={{ conversations, setConversations }}>
+                <SocketProvider>
+                  <div>
+                    <Routes>
+                      <Route path="/" element={<Login />} />
+                      <Route path="/signup" element={<Signup />} />
+                      <Route
+                        path="/dashboard"
+                        element={
+                          <ProtectedRoute>
+                            <Dashboard />
+                          </ProtectedRoute>
+                        }
+                      />
+                    </Routes>
+                    <Toaster
+                      position="top-center"
+                      reverseOrder={false}
+                      gutter={8}
+                      containerClassName=""
+                      containerStyle={{}}
+                      toasterId="default"
+                      toastOptions={{
+                        // Define default options
+                        className: "",
                         duration: 1300,
-                        iconTheme: {
-                          primary: "green",
-                          secondary: "black",
+                        removeDelay: 1000,
+                        style: {
+                          background: "#363636",
+                          color: "#fff",
                         },
-                      },
-                    }}
-                  />
-                </div>
-              </SocketProvider>
-            </ConversationProvider>
-          </ChatUsersProvider>
+
+                        // Default options for specific types
+                        success: {
+                          duration: 1300,
+                          iconTheme: {
+                            primary: "green",
+                            secondary: "black",
+                          },
+                        },
+                      }}
+                    />
+                  </div>
+                </SocketProvider>
+              </ConversationProvider>
+            </ChatUsersProvider>
+          </AllUserProvider>
         </ThemeProvider>
       </AuthProvider>
     </UserProvider>

@@ -6,6 +6,8 @@ import API from "../../config/axios";
 import toast from "react-hot-toast";
 import useAuth from "../contexts/AuthContext";
 import useUser from "../contexts/UserContext";
+import styled from "styled-components";
+import useTheme from "../contexts/ThemeContext";
 
 export default function Login() {
   const [loginData, setLoginData] = useState({
@@ -16,6 +18,7 @@ export default function Login() {
   const navigate = useNavigate();
   const { isAuthenticated, setIsAuthenticated } = useAuth();
   const { user, setUser } = useUser();
+  const { themeMode, darkMode, lightMode } = useTheme();
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -58,32 +61,38 @@ export default function Login() {
     sessionStorage.setItem("user", JSON.stringify(user));
   }, [user]);
 
-  // useEffect(() => {
-  //   async function getUserDetails() {
-  //     try {
-  //       const res = await API.get("/users/me");
-  //       const data = res.data;
-  //       if (!data.success) {
-  //         setIsAuthenticated(false);
-  //         return toast.error(data.message);
-  //       }
-  //       setIsAuthenticated(true);
-  //     } catch (error) {
-  //       setIsAuthenticated(false);
-  //       console.log(error.message);
-  //     }
-  //   }
-  //   getUserDetails();
-  // }, []);
+  useEffect(() => {
+    sessionStorage.setItem("themeMode", themeMode);
+  }, [themeMode]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 p-4">
+    <div className="min-h-screen relative flex items-center justify-center bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 dark:from-gray-900 dark:via-gray-800 dark:to-black p-4 transition-colors">
+      {/* Toggle Switch */}
+      <div className="absolute top-4 right-4">
+        <StyledWrapper>
+          <label className="switch">
+            <input
+              type="checkbox"
+              checked={themeMode === "dark"}
+              onChange={(e) =>
+                e.currentTarget.checked ? darkMode() : lightMode()
+              }
+            />
+            <div className="slider" />
+            <div className="slider-card">
+              <div className="slider-card-face slider-card-front" />
+              <div className="slider-card-face slider-card-back" />
+            </div>
+          </label>
+        </StyledWrapper>
+      </div>
+
       {/* Card */}
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="w-full max-w-md bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-white/20"
+        className="w-full max-w-md bg-white/10 dark:bg-gray-900/60 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-white/20 dark:border-gray-700"
       >
         {/* Title */}
         <motion.h1
@@ -143,9 +152,8 @@ export default function Login() {
           >
             {isLoading ? (
               <>
-                {/* Spinner */}
                 <svg
-                  className="w-5 h-5 animate-spin text-white"
+                  className="w-5 h-5 animate-spin text-white inline-block mr-2"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -188,3 +196,67 @@ export default function Login() {
     </div>
   );
 }
+
+const StyledWrapper = styled.div`
+  .switch {
+    --circle-dim: 1.2em;
+    font-size: 14px;
+    position: relative;
+    display: inline-block;
+    width: 3em;
+    height: 1.6em;
+    vertical-align: middle;
+  }
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #f5aeae;
+    transition: 0.4s;
+    border-radius: 30px;
+  }
+  .slider-card {
+    position: absolute;
+    height: var(--circle-dim);
+    width: var(--circle-dim);
+    border-radius: 50%;
+    left: 0.25em;
+    bottom: 0.25em;
+    transition: 0.4s;
+    pointer-events: none;
+  }
+  .slider-card-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    border-radius: 50%;
+    transition: 0.4s transform;
+  }
+  .slider-card-front {
+    background-color: #dc3535;
+  }
+  .slider-card-back {
+    background-color: #379237;
+    transform: rotateY(180deg);
+  }
+  input:checked ~ .slider-card .slider-card-back {
+    transform: rotateY(0);
+  }
+  input:checked ~ .slider-card .slider-card-front {
+    transform: rotateY(-180deg);
+  }
+  input:checked ~ .slider-card {
+    transform: translateX(1.4em);
+  }
+  input:checked ~ .slider {
+    background-color: #9ed99c;
+  }
+`;

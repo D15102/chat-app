@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 import useChatUsers from "../contexts/ChatUsersContext";
 import useConversations from "../contexts/ConversationContext";
 import useSocketContext from "../contexts/SocketContext.jsx";
+import useAllUsers from "../contexts/AllUserContext.js";
 
 const Left = ({
   selectedChatUser,
@@ -20,12 +21,13 @@ const Left = ({
   setMessage,
   showConversations,
   setShowConversations,
-  lastConversationMessage
+  lastConversationMessage,
 }) => {
   const [availableUsersLoading, setAvailableUsersLoading] = useState(false);
-  const [allUsers, setAllUsers] = useState([]);
+  const { allUsers, setAllUsers } = useAllUsers();
   const [filteredUsers, setFilteredUsers] = useState([]);
   const { chatUsers, setChatUsers } = useChatUsers();
+
   const [filteredChatUsers, setFilteredChatUsers] = useState([]);
   const { conversations, setConversations } = useConversations();
   const { onlineUsers } = useSocketContext();
@@ -66,7 +68,7 @@ const Left = ({
         setAllUsers((prev) => prev.filter((u) => u._id !== id));
       }
     } else {
-      console.log("Already Added");
+      toast("User Already Added To Chat ℹ️")
     }
   };
 
@@ -77,10 +79,10 @@ const Left = ({
       const data = res.data;
       if (!data.success) {
         setShowConversations(false);
-        console.log(data.message);
+        // console.log(data.message);
         return toast.error(data.message);
       }
-      console.log(data);
+      // console.log(data);
       setShowConversations(true);
       setConversations(data.messages);
     } catch (error) {
@@ -112,6 +114,13 @@ const Left = ({
       setFilteredChatUsers(chatUsers);
     }
   }, [chatUsers]);
+
+  useEffect(() => {
+    if (Array.isArray(allUsers) && allUsers.length > 0) {
+      // console.log(allUsers);
+      sessionStorage.setItem("allUsers", JSON.stringify(allUsers));
+    }
+  }, [allUsers]);
 
   useEffect(() => {
     if (Array.isArray(filteredChatUsers) && filteredChatUsers.length > 0) {
@@ -152,7 +161,7 @@ const Left = ({
                 <img
                   src={user.profilePicture}
                   alt=""
-                  className="rounded-full w-12 h-12 object-cover"
+                  className="rounded-full w-12 h-12 object-cover border-3 border-black dark:border-red-400"
                 />
                 {isOnline ? (
                   <div className="inline-grid *:[grid-area:1/1]">
@@ -180,7 +189,9 @@ const Left = ({
                         : "text-gray-600 dark:text-gray-400"
                     }`}
                   >
-                    {isSelected && lastConversationMessage ? lastConversationMessage : ""}
+                    {isSelected && lastConversationMessage
+                      ? lastConversationMessage
+                      : ""}
                   </p>
                 </div>
               </div>
