@@ -118,13 +118,13 @@ const Left = ({
   useEffect(() => {
     if (Array.isArray(allUsers) && allUsers.length > 0) {
       // console.log(allUsers);
-      sessionStorage.setItem("allUsers", JSON.stringify(allUsers));
+      localStorage.setItem("allUsers", JSON.stringify(allUsers));
     }
   }, [allUsers]);
 
   useEffect(() => {
     if (Array.isArray(filteredChatUsers) && filteredChatUsers.length > 0) {
-      sessionStorage.setItem("chatUsers", JSON.stringify(filteredChatUsers));
+      localStorage.setItem("chatUsers", JSON.stringify(filteredChatUsers));
     }
   }, [filteredChatUsers]);
 

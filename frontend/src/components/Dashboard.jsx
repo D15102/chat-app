@@ -39,9 +39,9 @@ export default function Dashboard() {
       toast.success(data.message);
       setChatUsers([]);
       setUser({});
-      sessionStorage.removeItem("chatUsers");
-      sessionStorage.removeItem("allUsers");
-      sessionStorage.removeItem("user");
+      localStorage.removeItem("chatUsers");
+      localStorage.removeItem("allUsers");
+      localStorage.removeItem("user");
       setIsAuthenticated(false);
       navigate("/");
     } catch (error) {
@@ -123,7 +123,7 @@ export default function Dashboard() {
 
   //for user changes
   useEffect(() => {
-    sessionStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("user", JSON.stringify(user));
   }, [user]);
 
   useEffect(() => {
@@ -259,7 +259,7 @@ export default function Dashboard() {
       </nav>
 
       {/* Main */}
-      <main className="w-full min-h-[calc(100vh-64px)] flex">
+      <main className="w-full max-h-[calc(100vh-64px)] flex">
         <Left
           selectedChatUser={selectedChatUser}
           setSelectedChatUser={setSelectedChatUser}

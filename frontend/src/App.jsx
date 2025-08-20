@@ -15,20 +15,20 @@ import { AllUserProvider } from "./contexts/AllUserContext.js";
 
 const App = () => {
   const [user, setUser] = useState(
-    JSON.parse(sessionStorage.getItem("user")) || {}
+    JSON.parse(localStorage.getItem("user")) || {}
   );
   const [isAuthenticated, setIsAuthenticated] = useState(
-    sessionStorage.getItem("isAuthenticated") || false
+    localStorage.getItem("isAuthenticated") || false
   );
   const [themeMode, setThemeMode] = useState(
     localStorage.getItem("themeMode") || "light"
   );
   const [chatUsers, setChatUsers] = useState(
-    JSON.parse(sessionStorage.getItem("chatUsers")) || []
+    JSON.parse(localStorage.getItem("chatUsers")) || []
   );
   const [conversations, setConversations] = useState([]);
   const [allUsers, setAllUsers] = useState(
-    JSON.parse(sessionStorage.getItem("allUsers")) || []
+    JSON.parse(localStorage.getItem("allUsers")) || []
   );
   const lightMode = () => {
     setThemeMode("light");

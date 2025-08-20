@@ -69,15 +69,17 @@ const Right = ({
   }, [socket, setConversations]);
 
   useEffect(() => {
-    setLastConversationMessage(conversations[conversations.length - 1]?.message);
+    setLastConversationMessage(
+      conversations[conversations.length - 1]?.message
+    );
   }, [conversations]);
 
   return (
-    <div className="w-full flex flex-col justify-center items-center dark:bg-gray-900">
+    <div className="w-full relative flex flex-col justify-center items-center dark:bg-gray-900">
       {selectedChatUser ? (
         <>
           {/* Top Chat Header */}
-          <div className="px-1 py-2 transition-colors ease-out duration-150 flex justify-baseline items-center space-x-4 cursor-default text-black dark:text-white w-full h-16 bg-slate-300 dark:bg-gray-800 shadow z-20">
+          <div className="absolute top-0 px-1 py-2 transition-colors ease-out duration-150 flex justify-baseline items-center space-x-4 cursor-default text-black dark:text-white w-full h-16 bg-slate-300 dark:bg-gray-800 shadow z-20">
             <img
               src={selectedChatUser.profilePicture}
               alt=""
@@ -94,7 +96,7 @@ const Right = ({
           </div>
 
           {/* Chat Section */}
-          <div className="w-full h-full flex flex-col">
+          <div className="chat-section w-full h-full flex flex-col">
             {/* Messages Area */}
             <div className="w-full h-full bg-lime-50 dark:bg-gray-900 flex flex-col space-y-4 py-4 px-2 overflow-y-auto">
               {Array.isArray(conversations) &&

@@ -54,11 +54,11 @@ export default function Login() {
   };
 
   useEffect(() => {
-    sessionStorage.setItem("isAuthenticated", isAuthenticated);
+    localStorage.setItem("isAuthenticated", isAuthenticated);
   }, [isAuthenticated]);
 
   useEffect(() => {
-    sessionStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("user", JSON.stringify(user));
   }, [user]);
 
   useEffect(() => {
