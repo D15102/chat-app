@@ -251,7 +251,7 @@ const Left = ({
                 filteredUsers.map((user) => (
                   <Popover.Close key={user._id}>
                     <div
-                      className="bg-gray-100 dark:bg-gray-700 px-2 py-2 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 mb-2 transition-colors flex items-center space-x-4 cursor-pointer"
+                      className="bg-gray-100 px-2 py-2 rounded-xl hover:bg-gray-200 mb-2 transition-colors flex items-center space-x-4 cursor-pointer"
                       onClick={(e) => handleAddPopUsers(user._id)}
                     >
                       <img
@@ -261,7 +261,7 @@ const Left = ({
                       />
                       <div className="flex flex-col gap-1">
                         <p className="text-sm font-medium">{user.username}</p>
-                        <p className="text-xs text-gray-600 dark:text-gray-400">
+                        <p className="text-xs text-gray-600">
                           {user.email}
                         </p>
                       </div>
@@ -269,7 +269,7 @@ const Left = ({
                   </Popover.Close>
                 ))
               ) : (
-                <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
+                <p className="text-sm text-gray-500 text-center">
                   No users found
                 </p>
               )}
