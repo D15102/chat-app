@@ -15,6 +15,8 @@ const Right = ({
   setMessage,
   showConversations,
   setShowConversations,
+  lastConversationMessage,
+  setLastConversationMessage,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -70,6 +72,10 @@ const Right = ({
     };
   }, [socket, setConversations]);
 
+  useEffect(() => {
+    setLastConversationMessage(conversations[conversations.length - 1]?.message);
+  }, [conversations]);
+
   return (
     <div className="w-full flex flex-col justify-center items-center">
       {selectedChatUser ? (
@@ -96,25 +102,27 @@ const Right = ({
               {Array.isArray(conversations) &&
               conversations.length > 0 &&
               showConversations ? (
-                conversations.map((conversation, idx) => (
-                  <div
-                    key={idx}
-                    ref={lastMessageRef}
-                    className={`inline-block max-w-[20rem] px-2 py-1 text-sm rounded-lgfont-medium 
+                conversations.map((conversation, idx) => {
+                  return (
+                    <div
+                      key={idx}
+                      ref={lastMessageRef}
+                      className={`inline-block max-w-[20rem] px-2 py-1 text-sm rounded-lgfont-medium 
                       ${
                         conversation.senderId === user._id
                           ? `self-end bg-lime-300`
                           : `self-start bg-blue-200`
                       }
                       `}
-                  >
-                    {conversation.message}
-                    <p className="font-normal text-[9px] text-end">
-                      {conversation.createdAt &&
-                        format(new Date(conversation.createdAt), "hh:mm a")}
-                    </p>
-                  </div>
-                ))
+                    >
+                      {conversation.message}
+                      <p className="font-normal text-[9px] text-end">
+                        {conversation.createdAt &&
+                          format(new Date(conversation.createdAt), "hh:mm a")}
+                      </p>
+                    </div>
+                  );
+                })
               ) : (
                 <p>No Conversations Yet</p>
               )}

@@ -20,6 +20,7 @@ const Left = ({
   setMessage,
   showConversations,
   setShowConversations,
+  lastConversationMessage
 }) => {
   const [availableUsersLoading, setAvailableUsersLoading] = useState(false);
   const [allUsers, setAllUsers] = useState([]);
@@ -179,7 +180,7 @@ const Left = ({
                         : "text-gray-600 dark:text-gray-400"
                     }`}
                   >
-                    Last Message
+                    {isSelected && lastConversationMessage ? lastConversationMessage : ""}
                   </p>
                 </div>
               </div>
