@@ -206,7 +206,7 @@ const Left = ({
       </div>
 
       {/* Popover Button */}
-      <div className="absolute bottom-3 right-4">
+      <div className="fixed bottom-3 right-[52%]">
         <Popover.Root>
           <Popover.Trigger>
             <IconButton
