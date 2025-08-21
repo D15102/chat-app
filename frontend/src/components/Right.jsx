@@ -121,6 +121,7 @@ const Right = ({
       if (!data.success) {
         return toast.error(data.message || "Translation failed");
       }
+      console.log(data.translatedContent);
       setTranslatedText(data.translatedContent);
     } catch (error) {
       console.log(error.message);
@@ -208,8 +209,8 @@ const Right = ({
                       {translatedText &&
                       translateTextOrNoT &&
                       translationTextId === conversation?._id
-                        ? String(translatedText)
-                        : String(conversation.message || "")}
+                        ? translatedText
+                        : conversation.message}
                     </p>
 
                     <p
