@@ -302,7 +302,7 @@ const Right = ({
 
             {/* Live Transcription */}
             <div className="mt-4 px-4 py-3 bg-white/20 text-white text-center rounded-xl w-full max-h-32 overflow-y-auto">
-              {results.length > 0 ? (
+              {Array.isArray(results) && results.length > 0 ? (
                 <p className="text-lg font-medium">
                   {results.map((r) => r.transcript).join(" ")}
                 </p>
