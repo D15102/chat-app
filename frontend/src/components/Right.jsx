@@ -115,21 +115,23 @@ const Right = ({
     );
   }, [conversations]);
 
+  // Converts results into plain transcript text
   const transcriptText = Array.isArray(results)
     ? results.map((r) => r.transcript).join(" ")
     : "";
 
   useEffect(() => {
-    if (transcriptText.trim() !== "") {
-      setMessage(transcriptText);
+    if (transcriptText.trim() !== "" && isRecording) {
+      setMessage((prev) => (prev + " " + transcriptText).trim());
     }
-  }, [results]);
+  }, [transcriptText, isRecording, setMessage]);
 
+  // ✅ Clear results only when recording stops
   useEffect(() => {
-    if (message.trim() === "") {
+    if (!isRecording && message.trim() === "") {
       setResults([]);
     }
-  }, [message]);
+  }, [isRecording, message, setResults]);
 
   return (
     <div className="w-full relative flex flex-col justify-center items-center dark:bg-gray-900">
