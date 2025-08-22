@@ -7,7 +7,7 @@ import API from "../../config/axios";
 import useConversations from "../contexts/ConversationContext";
 import useUser from "../contexts/UserContext";
 import useSocketContext from "../contexts/SocketContext";
-import { format } from "date-fns";
+import { format, isToday, isYesterday } from "date-fns";
 import useSpeechToText from "react-hook-speech-to-text";
 import { SparklesTextDemo } from "./SparklesText.jsx";
 import addNotification from "react-push-notification";
@@ -92,6 +92,12 @@ const Right = ({
     } finally {
       setIsTranslating(false);
     }
+  };
+
+  const getDateLabel = (date) => {
+    if (isToday(date)) return "Today";
+    if (isYesterday(date)) return "Yesterday";
+    return format(date, "dd MMM yyyy"); // Example: 19 Aug 2025
   };
 
   useEffect(() => {
@@ -183,61 +189,46 @@ const Right = ({
               conversations.length > 0 &&
               showConversations ? (
                 conversations.map((conversation, idx) => {
+                  const currentDate = new Date(conversation.createdAt);
+                  const prevDate =
+                    idx > 0 ? new Date(conversations[idx - 1].createdAt) : null;
+
+                  const showDateSeparator =
+                    !prevDate ||
+                    currentDate.toDateString() !== prevDate.toDateString();
+
                   return (
                     <div
                       key={idx}
                       ref={lastMessageRef}
-                      className={`inline-block max-w-[20rem] px-2 py-1 text-sm rounded-lg font-medium
-                      ${
-                        conversation.senderId === user._id
-                          ? `self-end bg-lime-300 dark:bg-lime-600 dark:text-white`
-                          : `self-start bg-blue-200 dark:bg-blue-600 dark:text-white`
-                      }
-                      `}
+                      className="flex flex-col items-center"
                     >
-                      <p className="mb-1">
-                        {translatedText &&
-                        translateTextOrNoT &&
-                        translationTextId === conversation?._id
-                          ? translatedText
-                          : conversation.message}
-                      </p>
+                      {showDateSeparator && (
+                        <div className="my-2 px-3 py-1 bg-gray-300 dark:bg-gray-700 text-xs font-medium rounded-full text-gray-800 dark:text-gray-200">
+                          {getDateLabel(currentDate)}
+                        </div>
+                      )}
 
-                      <p
-                        className={`mb-1  text-xs font-normal hover:text-blue-500 dark:hover:text-black transition-all duration-200
-                           ${
-                             isTranslating
-                               ? "cursor-not-allowed pointer-events-none select-none"
-                               : "cursor-pointer"
-                           }
-                           `}
-                        onClick={(e) => {
-                          setTranslateTextOrNoT(!translateTextOrNoT);
-                          handleTranslate(conversation);
-                        }}
+                      <div
+                        className={`inline-block max-w-[20rem] px-2 py-1 text-sm rounded-lg font-medium
+          ${
+            conversation.senderId === user._id
+              ? `self-end bg-lime-300 dark:bg-lime-600 dark:text-white`
+              : `self-start bg-blue-200 dark:bg-blue-600 dark:text-white`
+          }`}
                       >
-                        {isTranslating &&
-                        translateTextOrNoT &&
-                        translationTextId === conversation?._id ? (
-                          <>
-                            <SparklesTextDemo />
-                          </>
-                        ) : translateTextOrNoT &&
-                          translationTextId === conversation?._id ? (
-                          <span className="flex items-center gap-1">
-                            See Original Text <TypeOutline size={10} />
-                          </span>
-                        ) : (
-                          <span className="flex items-center gap-1">
-                            Translate <Languages size={10} />
-                          </span>
-                        )}
-                      </p>
-
-                      <p className="font-normal text-[9px] text-end text-gray-600 dark:text-gray-300">
-                        {conversation.createdAt &&
-                          format(new Date(conversation.createdAt), "hh:mm a")}
-                      </p>
+                        <p className="mb-1">
+                          {translatedText &&
+                          translateTextOrNoT &&
+                          translationTextId === conversation?._id
+                            ? translatedText
+                            : conversation.message}
+                        </p>
+                        <p className="font-normal text-[9px] text-end text-gray-600 dark:text-gray-50">
+                          {conversation.createdAt &&
+                            format(new Date(conversation.createdAt), "hh:mm a")}
+                        </p>
+                      </div>
                     </div>
                   );
                 })
