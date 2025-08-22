@@ -23,6 +23,7 @@
     "react-dom": "^19.1.1",
     "react-hook-speech-to-text": "^0.8.0",
     "react-hot-toast": "^2.6.0",
+    "react-push-notification": "^1.5.4",
     "react-router-dom": "^7.8.1",
     "socket.io-client": "^4.8.1",
     "styled-components": "^6.1.19",

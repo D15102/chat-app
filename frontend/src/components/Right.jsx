@@ -10,6 +10,7 @@ import useSocketContext from "../contexts/SocketContext";
 import { format } from "date-fns";
 import useSpeechToText from "react-hook-speech-to-text";
 import { SparklesTextDemo } from "./SparklesText.jsx";
+import addNotification from "react-push-notification";
 
 const Right = ({
   selectedChatUser,
@@ -54,9 +55,15 @@ const Right = ({
       setIsLoading(true);
       const res = await API.post(`/message/send/${id}`, { message });
       const data = res.data;
-
       setConversations((prev) => [...prev, data.newMessage]);
       setShowConversations(true);
+      // 🔔 Play notification sound
+      const audio = new Audio(
+        `https://res.cloudinary.com/dozetrngz/video/upload/v1755841162/notification_2_fsuzm8.mp3`
+      );
+      audio.play().catch((err) => {
+        console.warn("Autoplay prevented:", err);
+      });
       setMessage("");
       setResults([]);
     } catch (error) {
@@ -100,6 +107,21 @@ const Right = ({
 
     const handleNewMessage = (message) => {
       setConversations((prev) => [...prev, message]);
+      // 🔔 Play notification sound
+      const audio = new Audio(
+        `https://res.cloudinary.com/dozetrngz/video/upload/v1755840260/notification_1_zylw6a.mp3`
+      );
+      audio.play().catch((err) => {
+        console.warn("Autoplay prevented:", err);
+      });
+      addNotification({
+        title: "New Message",
+        subtitle: "This is a subtitle",
+        message: message.message,
+        theme: "darkblue",
+        duration: 2500,
+        native: true, // when using native, your OS will handle theming.
+      });
     };
 
     socket.on("newMessage", handleNewMessage);
@@ -156,7 +178,7 @@ const Right = ({
           {/* Chat Section */}
           <div className="chat-section w-full h-full flex flex-col">
             {/* Messages Area */}
-            <div className="w-full h-full bg-lime-50 dark:bg-gray-900 flex flex-col space-y-4 py-4 px-2 overflow-y-auto">
+            <div className="w-full h-full mt-15 bg-lime-50 dark:bg-gray-900 flex flex-col space-y-4 py-4 px-2 overflow-y-auto">
               {Array.isArray(conversations) &&
               conversations.length > 0 &&
               showConversations ? (
@@ -177,8 +199,8 @@ const Right = ({
                         {translatedText &&
                         translateTextOrNoT &&
                         translationTextId === conversation?._id
-                          ? translatedText.toString()
-                          : (conversation.message).toString()}
+                          ? translatedText
+                          : conversation.message}
                       </p>
 
                       <p

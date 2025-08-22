@@ -12,6 +12,7 @@ import { ChatUsersProvider } from "./contexts/ChatUsersContext";
 import { ConversationProvider } from "./contexts/ConversationContext";
 import { SocketProvider } from "./contexts/SocketContext.jsx";
 import { AllUserProvider } from "./contexts/AllUserContext.js";
+import { Notifications } from "react-push-notification";
 
 const App = () => {
   const [user, setUser] = useState(
@@ -67,6 +68,7 @@ const App = () => {
                         }
                       />
                     </Routes>
+                    <Notifications/>
                     <Toaster
                       position="top-center"
                       reverseOrder={false}

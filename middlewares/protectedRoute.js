@@ -16,3 +16,17 @@ export const protectedRoute = async (req, res, next) => {
         console.log(error.message)
     }
 }
+
+/**
+ * 
+ * {
+ * id : user._id
+ * email :  ""
+ * }
+ *const decoded =  jwt.verrify()
+ req.user = {
+ id
+ email :
+ iat : ""}
+ req.user.id    
+ */

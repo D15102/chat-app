@@ -18,10 +18,10 @@ export const uploadProfilePicture = async (req, res) => {
         const file64 = bufferToDataURI(fileFormat, buffer)
         const uploadResult = await cloudinary.uploader.upload(file64, {
             resource_type: "image",
-            folder: "chat-app",
+            folder: "chat-app/DPs",
         })
         const user = await userModal.findById({ _id: req.userId })
-        console.log(user)
+        // console.log(user)
         user.profilePicture = uploadResult.secure_url
         await user.save()
         return res.json({
