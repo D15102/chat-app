@@ -189,6 +189,7 @@ const Right = ({
               conversations.length > 0 &&
               showConversations ? (
                 conversations.map((conversation, idx) => {
+                  //check to show date seperator or not
                   const currentDate = new Date(conversation.createdAt);
                   const prevDate =
                     idx > 0 ? new Date(conversations[idx - 1].createdAt) : null;
@@ -208,14 +209,14 @@ const Right = ({
                           {getDateLabel(currentDate)}
                         </div>
                       )}
-
                       <div
                         className={`inline-block max-w-[20rem] px-2 py-1 text-sm rounded-lg font-medium
-          ${
-            conversation.senderId === user._id
-              ? `self-end bg-lime-300 dark:bg-lime-600 dark:text-white`
-              : `self-start bg-blue-200 dark:bg-blue-600 dark:text-white`
-          }`}
+                      ${
+                        conversation.senderId === user._id
+                          ? `self-end bg-lime-300 dark:bg-lime-600 dark:text-white`
+                          : `self-start bg-blue-200 dark:bg-blue-600 dark:text-white`
+                      }
+                      `}
                       >
                         <p className="mb-1">
                           {translatedText &&
@@ -224,7 +225,39 @@ const Right = ({
                             ? translatedText
                             : conversation.message}
                         </p>
-                        <p className="font-normal text-[9px] text-end text-gray-600 dark:text-gray-50">
+
+                        <p
+                          className={`mb-1  text-xs font-normal hover:text-blue-500 dark:hover:text-black transition-all duration-200
+                           ${
+                             isTranslating
+                               ? "cursor-not-allowed pointer-events-none select-none"
+                               : "cursor-pointer"
+                           }
+                           `}
+                          onClick={(e) => {
+                            setTranslateTextOrNoT(!translateTextOrNoT);
+                            handleTranslate(conversation);
+                          }}
+                        >
+                          {isTranslating &&
+                          translateTextOrNoT &&
+                          translationTextId === conversation?._id ? (
+                            <>
+                              <SparklesTextDemo />
+                            </>
+                          ) : translateTextOrNoT &&
+                            translationTextId === conversation?._id ? (
+                            <span className="flex items-center gap-1">
+                              See Original Text <TypeOutline size={10} />
+                            </span>
+                          ) : (
+                            <span className="flex items-center gap-1">
+                              Translate <Languages size={10} />
+                            </span>
+                          )}
+                        </p>
+
+                        <p className="font-normal text-[9px] text-end text-gray-600 dark:text-gray-300">
                           {conversation.createdAt &&
                             format(new Date(conversation.createdAt), "hh:mm a")}
                         </p>
