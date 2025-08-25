@@ -1,5 +1,5 @@
 import express from 'express'
-import { login, logout, me, signup } from '../controllers/authController.js'
+import { getAccessToken,login, logout, me, signup } from '../controllers/authController.js'
 import { protectedRoute } from '../middlewares/protectedRoute.js'
 import { getAvailableUsers } from '../controllers/showAvailableUsersController.js'
 import multer from 'multer'
@@ -13,10 +13,11 @@ const upload = multer({ storage })
 
 router.post('/login', login)
 router.post('/signup', signup)
+router.get('/github/getAccessToken', getAccessToken)
 router.get('/me', protectedRoute, me)
 router.get('/logout', logout)
 router.get("/getAllUsers", protectedRoute, getAvailableUsers)
-router.post("/upload/profilePicture", protectedRoute, upload.single("file"),uploadProfilePicture)
+router.post("/upload/profilePicture", protectedRoute, upload.single("file"), uploadProfilePicture)
 
 export default router
 

@@ -8,6 +8,7 @@ import useAuth from "../contexts/AuthContext.js";
 import useUser from "../contexts/UserContext.js";
 import styled from "styled-components";
 import useTheme from "../contexts/ThemeContext";
+import axios from "axios";
 
 export default function Signup() {
   const [signupData, setSignupData] = useState({
@@ -16,11 +17,13 @@ export default function Signup() {
     password: "",
     confirmPassword: "",
   });
+  const [isLoading, setisLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isGithubLoading, setIsGithubLoading] = useState(false);
   const { themeMode, darkMode, lightMode } = useTheme();
   const { user, setUser } = useUser();
-  const [isLoading, setisLoading] = useState(false);
   const navigate = useNavigate();
-  const { setIsAuthenticated } = useAuth();
+  const { isAuthenticated, setIsAuthenticated } = useAuth();
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -29,7 +32,10 @@ export default function Signup() {
     }
     try {
       setisLoading(true);
-      const res = await API.post(`/users/signup`, signupData);
+      const res = await API.post(`/users/signup`, {
+        ...signupData,
+        signUpMode: "Email",
+      });
       const data = res.data;
       if (!data.success) {
         return toast.error(data.message);
@@ -58,9 +64,79 @@ export default function Signup() {
     });
   };
 
+  const handleGithubSignup = async () => {
+    window.location.assign(
+      `https://github.com/login/oauth/authorize?client_id=${
+        import.meta.env.VITE_GITHUB_CLIENT_ID_SIGNUP
+      }`
+    );
+  };
+
   useEffect(() => {
-    sessionStorage.setItem("user", JSON.stringify(user));
+    const queryString = window.location.search;
+    // console.log(queryString);
+    const urlParams = new URLSearchParams(queryString);
+    const code = urlParams.get("code");
+    console.log(code);
+    if (code && localStorage.getItem("signup_access_token") === null) {
+      async function getAcceessToken() {
+        try {
+          const res = await API.get(
+            `/users/github/getAccessToken?code=${code}&mode=Signup`
+          );
+          const data = res.data;
+          if (data.access_token) {
+            localStorage.setItem("signup_access_token", data.access_token);
+            githubSignup(data.access_token);
+          }
+          // console.log(data);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      getAcceessToken();
+    }
+
+    async function githubSignup(access_token) {
+      try {
+        setIsGithubLoading(true);
+        setisLoading(true);
+        const res = await API.post(
+          `/users/signup`,
+          {
+            signUpMode: "Github",
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${access_token}`,
+            },
+          }
+        );
+        const data = res.data;
+        if (!data.success) {
+          return toast.error(data.message);
+        }
+        console.log(data);
+        setIsAuthenticated(true);
+        setUser(data.user);
+        toast.success(data.message);
+        navigate("/dashboard");
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsGithubLoading(false);
+        setisLoading(false);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("user", JSON.stringify(user));
   }, [user]);
+  useEffect(() => {
+    localStorage.setItem("isAuthenticated", isAuthenticated);
+  }, [isAuthenticated]);
 
   useEffect(() => {
     localStorage.setItem("themeMode", themeMode);
@@ -218,6 +294,99 @@ export default function Signup() {
             )}
           </motion.button>
         </form>
+        {/* Social Buttons */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="mt-6 space-y-3"
+        >
+          {/* Google Button */}
+          {/* <button
+            type="button"
+            className="w-full cursor-pointer flex items-center justify-center gap-3 py-3 bg-white text-gray-800 font-medium rounded-xl shadow-md hover:bg-gray-100 transition"
+            disabled={isLoading}
+          >
+            {isGoogleLoading ? (
+              <>
+                <svg
+                  className="w-5 h-5 animate-spin text-black inline-block mr-2"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+                Connecting To Google...
+              </>
+            ) : (
+              <>
+                <img
+                  src="https://www.svgrepo.com/show/355037/google.svg"
+                  alt="Google"
+                  className="w-5 h-5"
+                />
+                Continue with Google
+              </>
+            )}
+          </button> */}
+
+          {/* Github Button */}
+
+          <button
+            type="button"
+            className="w-full cursor-pointer flex items-center justify-center gap-3 py-3 bg-gray-700 text-white font-medium rounded-xl shadow-md hover:bg-gray-600 transition"
+            disabled={isLoading}
+            onClick={handleGithubSignup}
+          >
+            {isGithubLoading ? (
+              <>
+                <svg
+                  className="w-5 h-5 animate-spin text-white inline-block mr-2"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+                Connecting To GitHub...
+              </>
+            ) : (
+              <>
+                <img
+                  src="https://www.svgrepo.com/show/475654/github-color.svg"
+                  alt="GitHub"
+                  className="w-5 h-5"
+                />
+                Continue with GitHub
+              </>
+            )}
+          </button>
+        </motion.div>
 
         {/* Footer */}
         <motion.p

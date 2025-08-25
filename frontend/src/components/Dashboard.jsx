@@ -42,6 +42,8 @@ export default function Dashboard() {
       localStorage.removeItem("chatUsers");
       localStorage.removeItem("allUsers");
       localStorage.removeItem("user");
+      localStorage.removeItem("login_access_token");
+      localStorage.removeItem("signup_access_token");
       setIsAuthenticated(false);
       navigate("/");
     } catch (error) {
@@ -89,26 +91,6 @@ export default function Dashboard() {
       setIsUploading(false);
     }
   };
-
-  useEffect(() => {
-    async function getUserDetails() {
-      try {
-        const res = await API.get("/users/me");
-        const data = res.data;
-        if (!data.success) {
-          setIsAuthenticated(false);
-          return;
-        }
-        setIsAuthenticated(true);
-        // console.log(data.user)
-        setUser(data.user);
-      } catch (error) {
-        setIsAuthenticated(false);
-        console.log(error.message);
-      }
-    }
-    // getUserDetails();
-  }, []);
 
   // close on outside click
   useEffect(() => {

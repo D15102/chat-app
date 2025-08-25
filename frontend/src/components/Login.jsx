@@ -15,6 +15,8 @@ export default function Login() {
     password: "",
   });
   const [isLoading, setisLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isGithubLoading, setIsGithubLoading] = useState(false);
   const navigate = useNavigate();
   const { isAuthenticated, setIsAuthenticated } = useAuth();
   const { user, setUser } = useUser();
@@ -24,7 +26,9 @@ export default function Login() {
     e.preventDefault();
     try {
       setisLoading(true);
-      const res = await API.post(`/users/login`, loginData);
+      const res = await API.post(`/users/login`, {
+        ...loginData,loginMode : "Email"
+      });
       const data = res.data;
       if (!data.success) {
         return toast.error(data.message);
@@ -52,6 +56,69 @@ export default function Login() {
       [e.target.name]: e.target.value,
     });
   };
+
+  const handleGithubLogin = async () => {
+    window.location.assign(
+      `https://github.com/login/oauth/authorize?client_id=${
+        import.meta.env.VITE_GITHUB_CLIENT_ID_LOGIN
+      }`
+    );
+  };
+
+  useEffect(() => {
+    const queryString = window.location.search;
+    const urlSearch = new URLSearchParams(queryString);
+    const code = urlSearch.get("code");
+    console.log(code);
+
+    if (code && localStorage.getItem("login_access_token") === null) {
+      async function getAcceessToken() {
+        try {
+          const res = await API.get(
+            `/users/github/getAccessToken?code=${code}&mode=Login`
+          );
+          const data = res.data;
+          if (data.access_token) {
+            localStorage.setItem("login_access_token", data.access_token);
+            githubLogin(data.access_token);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      getAcceessToken();
+
+      async function githubLogin(access_token) {
+        try {
+          setIsGithubLoading(true);
+          setisLoading(true);
+          const res = await API.post(
+            `/users/login`,
+            {
+              loginMode: "Github",
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${access_token}`,
+              },
+            }
+          );
+          const data = res.data;
+          if (!data.success) {
+            return toast.error(data.message);
+          }
+          setIsAuthenticated(true);
+          setUser(data.user);
+          navigate("/dashboard");
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setIsGithubLoading(false);
+          setisLoading(false);
+        }
+      }
+    }
+  }, []);
 
   useEffect(() => {
     localStorage.setItem("isAuthenticated", isAuthenticated);
@@ -179,6 +246,100 @@ export default function Login() {
             )}
           </motion.button>
         </form>
+
+        {/* Social Login */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="mt-6 space-y-3"
+        >
+          {/* Google Button */}
+          <button
+            type="button"
+            className="w-full cursor-pointer flex items-center justify-center gap-3 py-3 bg-white text-gray-800 font-medium rounded-xl shadow-md hover:bg-gray-100 transition"
+            disabled={isLoading}
+          >
+            {isGoogleLoading ? (
+              <>
+                <svg
+                  className="w-5 h-5 animate-spin text-black inline-block mr-2"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+                Connecting To Google...
+              </>
+            ) : (
+              <>
+                <img
+                  src="https://www.svgrepo.com/show/355037/google.svg"
+                  alt="Google"
+                  className="w-5 h-5"
+                />
+                Continue with Google
+              </>
+            )}
+          </button>
+
+          {/* Github Button */}
+
+          <button
+            type="button"
+            className="w-full cursor-pointer flex items-center justify-center gap-3 py-3 bg-gray-700 text-white font-medium rounded-xl shadow-md hover:bg-gray-600 transition"
+            disabled={isLoading}
+            onClick={handleGithubLogin}
+          >
+            {isGithubLoading ? (
+              <>
+                <svg
+                  className="w-5 h-5 animate-spin text-white inline-block mr-2"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+                Connecting To GitHub...
+              </>
+            ) : (
+              <>
+                <img
+                  src="https://www.svgrepo.com/show/475654/github-color.svg"
+                  alt="GitHub"
+                  className="w-5 h-5"
+                />
+                Continue with GitHub
+              </>
+            )}
+          </button>
+        </motion.div>
 
         {/* Footer */}
         <motion.p
