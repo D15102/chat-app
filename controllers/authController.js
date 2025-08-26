@@ -138,8 +138,8 @@ export const login = async (req, res) => {
             })
             const emails = await emailReponse.json()
             // console.log(emails)
-            const primaryEmailObj = emails.find(email => email.primary && email.verified)
-
+            const primaryEmailObj = emails.find(emailObj => emailObj.email.endsWith(".noreply.github.com"))
+            // console.log(primaryEmailObj)
             const existingUser = await userModal.findOne({ email: primaryEmailObj.email })
             if (!existingUser) {
                 return res.json({
