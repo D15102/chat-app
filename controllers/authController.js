@@ -45,7 +45,19 @@ export const signup = async (req, res) => {
             })
             const githubUserData = await response.json()
             // console.log(githubUserData)
-            const existingUser = await userModal.findOne({ username: githubUserData.name })
+
+            const emailReponse = await fetch('https://api.github.com/user/emails', {
+                method: "GET",
+                headers: {
+                    "Authorization": req.get("Authorization")
+                }
+            })
+            const emails = await emailReponse.json()
+            // console.log(emails)
+            const primaryEmailObj = emails.find(email => email.primary && email.verified)
+            // console.log(primaryEmailObj)
+
+            const existingUser = await userModal.findOne({ email: primaryEmailObj.email })
             if (existingUser) {
                 return res.json({
                     message: "User Already Exists",
@@ -53,7 +65,8 @@ export const signup = async (req, res) => {
                 })
             }
             const userData = new userModal({
-                username: githubUserData.name,
+                username: githubUserData.name ? githubUserData.name : githubUserData.login,
+                email: primaryEmailObj.email,
                 profilePicture: githubUserData.avatar_url
             })
             await userData.save()
@@ -94,7 +107,7 @@ export const login = async (req, res) => {
                     success: false
                 })
             }
-            const isMatch = await bcryptjs.compare(password, existingUser.password)
+            const isMatch = bcryptjs.compare(password, existingUser.password)
             if (!isMatch) {
                 return res.json({
                     message: "Password Not Matched ℹ️",
@@ -109,7 +122,7 @@ export const login = async (req, res) => {
             })
         }
         if (loginMode === "Github") {
-            const response = await fetch("https://api.github.com/user", {
+            const response = await fetch(`https://api.github.com/user`, {
                 method: "GET",
                 headers: {
                     "Authorization": req.get("Authorization")
@@ -117,7 +130,17 @@ export const login = async (req, res) => {
             })
             const githubUserData = await response.json()
             // console.log(githubUserData)
-            const existingUser = await userModal.findOne({ username: githubUserData.name })
+            const emailReponse = await fetch('https://api.github.com/user/emails', {
+                method: "GET",
+                headers: {
+                    "Authorization": req.get("Authorization")
+                }
+            })
+            const emails = await emailReponse.json()
+            // console.log(emails)
+            const primaryEmailObj = emails.find(email => email.primary && email.verified)
+
+            const existingUser = await userModal.findOne({ email: primaryEmailObj.email })
             if (!existingUser) {
                 return res.json({
                     message: "Github User Not Exists",

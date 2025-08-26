@@ -66,9 +66,7 @@ export default function Signup() {
 
   const handleGithubSignup = async () => {
     window.location.assign(
-      `https://github.com/login/oauth/authorize?client_id=${
-        import.meta.env.VITE_GITHUB_CLIENT_ID_SIGNUP
-      }`
+      `https://github.com/login/oauth/authorize?client_id=${import.meta.env.VITE_GITHUB_CLIENT_ID_SIGNUP}&scope=user:email`
     );
   };
 

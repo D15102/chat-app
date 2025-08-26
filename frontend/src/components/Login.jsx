@@ -61,7 +61,7 @@ export default function Login() {
     window.location.assign(
       `https://github.com/login/oauth/authorize?client_id=${
         import.meta.env.VITE_GITHUB_CLIENT_ID_LOGIN
-      }`
+      }&scope=user:email`
     );
   };
 
@@ -255,7 +255,8 @@ export default function Login() {
           className="mt-6 space-y-3"
         >
           {/* Google Button */}
-          <button
+
+          {/* <button
             type="button"
             className="w-full cursor-pointer flex items-center justify-center gap-3 py-3 bg-white text-gray-800 font-medium rounded-xl shadow-md hover:bg-gray-100 transition"
             disabled={isLoading}
@@ -294,7 +295,7 @@ export default function Login() {
                 Continue with Google
               </>
             )}
-          </button>
+          </button> */}
 
           {/* Github Button */}
 
