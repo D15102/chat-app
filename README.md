@@ -35,8 +35,8 @@ Experience the app live: [**Talksy Live Demo**](https://talksy.qzz.io)
 
 ## 🎨 Screenshots
 
-![Login Page](https://your-image-link.com/login.png)  
-![Chat Interface](https://your-image-link.com/chat.png)  
+![Login Page](https://res.cloudinary.com/dozetrngz/image/upload/v1757657316/Screenshot_2025-09-12_113802_tkmgxd.png) 
+![Chat Interface](https://res.cloudinary.com/dozetrngz/image/upload/v1757657342/Screenshot_2025-09-12_113849_zcogqp.png)  
 
 ---
 
