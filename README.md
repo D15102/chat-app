@@ -30,13 +30,14 @@ Experience the app live: 🚀
 - **Backend:** Node.js, Express
 - **Database:** MongoDB Atlas
 - **Realtime Communication:** Socket.io
-- **Deployment:** Render
 
 ---
 
 ## 🎨 Screenshots
 
-![Login Page](https://res.cloudinary.com/dozetrngz/image/upload/v1757657316/Screenshot_2025-09-12_113802_tkmgxd.png) 
+- **Login**
+![Login Page](https://res.cloudinary.com/dozetrngz/image/upload/v1757657316/Screenshot_2025-09-12_113802_tkmgxd.png)
+- **InterFace**
 ![Chat Interface](https://res.cloudinary.com/dozetrngz/image/upload/v1757657342/Screenshot_2025-09-12_113849_zcogqp.png)  
 
 ---
