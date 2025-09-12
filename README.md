@@ -17,7 +17,7 @@ Welcome to **Talksy**, a modern, real-time chat application designed for seamles
 
 ## 🚀 Demo
 
-Experience the app live: [**Talksy Live Demo**](https://talksy.qzz.io)
+Experience the app live: <a href="https://talksy.qzz.io" target="_blank">Talksy Live Demo</a>
 
 > Try logging in and chatting in real time with friends or yourself to see how smooth it is!
 
