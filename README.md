@@ -19,8 +19,8 @@ Welcome to **Talksy**, a modern, real-time chat application designed for seamles
 
 Experience the app live:
 ```javascript
-window.open()
-
+window.open("https://www.talksy.qzz.io","_blank")
+```
 > Try logging in and chatting in real time with friends or yourself to see how smooth it is!
 
 ---
