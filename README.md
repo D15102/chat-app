@@ -46,7 +46,7 @@ Experience the app live: 🚀
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/talksy.git
+git clone https://github.com/D15102/chat-app
 
 # Navigate to project folder
 cd talksy
